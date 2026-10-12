@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import LiveSession from '../models/LiveSession.js';
 import Attendance from '../models/Attendance.js';
 
@@ -8,15 +9,26 @@ export default function(io, socket) {
   socket.on('join-session', async ({ sessionId, roomId }) => {
     try {
       if (!roomId) return;
-      socket.join(roomId);
       
       let sessionDoc = null;
-      if (sessionId) {
+      if (sessionId && mongoose.Types.ObjectId.isValid(sessionId)) {
         sessionDoc = await LiveSession.findById(sessionId);
       }
       if (!sessionDoc) {
-        sessionDoc = await LiveSession.findOne({ roomId, status: 'active' });
+        sessionDoc = await LiveSession.findOne({ roomId });
       }
+
+      // If the session has already completed or ended, reject join attempt
+      if (sessionDoc && (sessionDoc.status === 'completed' || sessionDoc.status === 'ended')) {
+        socket.emit('session-ended', {
+          sessionId: sessionDoc._id,
+          roomId,
+          message: 'This session has already ended.'
+        });
+        return;
+      }
+
+      socket.join(roomId);
 
       const activeSessionId = sessionDoc ? sessionDoc._id : sessionId;
       socketMetaMap.set(socket.id, { roomId, sessionId: activeSessionId });
@@ -86,8 +98,26 @@ export default function(io, socket) {
     socket.to(roomId).emit('session-started');
   });
 
+  socket.on('end-session', ({ roomId, sessionId }) => {
+    if (roomId) {
+      io.to(roomId).emit('session-ended', {
+        roomId,
+        sessionId,
+        message: 'The teacher has ended this session.'
+      });
+      roomUsersMap.delete(roomId);
+    }
+  });
+
   socket.on('session-ended', ({ roomId, sessionId }) => {
-    socket.to(roomId).emit('session-ended', { sessionId });
+    if (roomId) {
+      io.to(roomId).emit('session-ended', {
+        roomId,
+        sessionId,
+        message: 'The teacher has ended this session.'
+      });
+      roomUsersMap.delete(roomId);
+    }
   });
 
   socket.on('disconnect', async () => {

@@ -14,6 +14,7 @@ export const useWebRTC = (socket, roomId, userId, userName, isTeacher) => {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [error, setError] = useState(null);
+  const [sessionEndedInfo, setSessionEndedInfo] = useState(null);
 
   const localStreamRef = useRef(null);
   const peerConnections = useRef(new Map()); // socketId -> { pc, queue: [], user }
@@ -227,8 +228,9 @@ export const useWebRTC = (socket, roomId, userId, userName, isTeacher) => {
     };
 
     // 7. Session ended
-    const handleSessionEnded = () => {
+    const handleSessionEnded = (data) => {
       cleanup();
+      setSessionEndedInfo(data || { message: 'The teacher has ended this session.' });
     };
 
     socket.on('room-users', handleRoomUsers);
@@ -254,13 +256,26 @@ export const useWebRTC = (socket, roomId, userId, userName, isTeacher) => {
 
   const cleanup = useCallback(() => {
     if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach((t) => t.stop());
+      localStreamRef.current.getTracks().forEach((t) => {
+        try {
+          t.stop();
+        } catch (e) {
+          // ignore
+        }
+      });
       localStreamRef.current = null;
     }
     setLocalStream(null);
 
     peerConnections.current.forEach(({ pc }) => {
       try {
+        if (pc.getSenders) {
+          pc.getSenders().forEach((s) => {
+            if (s.track) {
+              try { s.track.stop(); } catch (e) {}
+            }
+          });
+        }
         pc.close();
       } catch (e) {
         // ignore
@@ -305,9 +320,10 @@ export const useWebRTC = (socket, roomId, userId, userName, isTeacher) => {
     socket?.emit('leave-session', { roomId });
   }, [socket, roomId, cleanup]);
 
-  const endSession = useCallback(() => {
+  const endSession = useCallback((sessionId) => {
     if (isTeacher) {
-      socket?.emit('session-ended', { roomId });
+      socket?.emit('end-session', { roomId, sessionId });
+      socket?.emit('session-ended', { roomId, sessionId });
       cleanup();
     }
   }, [socket, roomId, isTeacher, cleanup]);
@@ -321,6 +337,9 @@ export const useWebRTC = (socket, roomId, userId, userName, isTeacher) => {
     toggleVideo,
     leaveSession,
     endSession,
+    cleanup,
+    sessionEndedInfo,
+    setSessionEndedInfo,
     connectionStatus,
     error
   };
