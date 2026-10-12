@@ -1,8 +1,13 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 
-const SocketContext = createContext();
+const SocketContext = createContext(null);
 
 export const useSocketContext = () => useContext(SocketContext);
 
@@ -11,22 +16,41 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    let newSocket;
-    if (user && token) {
-      const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
-      newSocket = io(socketUrl, {
-        auth: {
-          token
-        }
-      });
-
-      setSocket(newSocket);
+    if (!user || !token) {
+      setSocket(null);
+      return;
     }
 
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+
+    const newSocket = io(socketUrl, {
+      auth: { token },
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 20000,
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Socket connected:', newSocket.id);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error.message);
+    });
+
+    newSocket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+    });
+
+    setSocket(newSocket);
+
     return () => {
-      if (newSocket) {
-        newSocket.disconnect();
-      }
+      newSocket.removeAllListeners();
+      newSocket.disconnect();
+      setSocket(null);
     };
   }, [user, token]);
 
@@ -36,3 +60,5 @@ export const SocketProvider = ({ children }) => {
     </SocketContext.Provider>
   );
 };
+
+export default SocketContext;
