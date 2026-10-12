@@ -31,6 +31,10 @@
   z-index: 100;
 }
 
+.hamburger {
+  display: none;
+}
+
 .auth-layout {
   min-height: 100vh;
   display: flex;
@@ -41,6 +45,18 @@
 }
 
 @media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    gap: 0.5rem;
+  }
   .layout-sidebar {
     transform: translateX(-100%);
   }
