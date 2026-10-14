@@ -106,7 +106,7 @@ const StudentLayout = () => {
         <header className="layout-navbar">
           <button
             ref={hamburgerRef}
-            className="btn-outline hamburger d-md-none"
+            className="btn-outline hamburger"
             onClick={() => setSidebarOpen((prev) => !prev)}
             aria-label="Toggle navigation menu"
             aria-expanded={sidebarOpen}

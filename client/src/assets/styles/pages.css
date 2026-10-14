@@ -15,6 +15,12 @@
   gap: 1.5rem;
   padding: 1.5rem;
 }
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
 .live-classroom {
   display: flex;
   height: calc(100vh - 70px);
@@ -37,4 +43,5 @@
 @media (max-width: 768px) {
   .live-classroom { flex-direction: column; }
   .chat-panel { width: 100%; height: 300px; border-left: none; border-top: 1px solid #333; }
+  .filter-buttons { justify-content: center;  }
 }

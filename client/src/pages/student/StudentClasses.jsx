@@ -45,7 +45,7 @@ const StudentClasses = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ margin: 0 }}>Class Schedule & Lectures</h1>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div className="filter-buttons">
           <Button variant={filter === 'all' ? 'primary' : 'outline'} size="sm" onClick={() => setFilter('all')}>
             All ({classes.length})
           </Button>
