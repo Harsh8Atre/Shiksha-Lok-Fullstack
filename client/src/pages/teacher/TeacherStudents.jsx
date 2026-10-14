@@ -51,19 +51,29 @@ const TeacherStudents = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>Enrolled Students</h1>
+      <div className="responsive-page-header enrolled-students-header">
+        <div className="responsive-page-heading">
+          <h1>Enrolled Students</h1>
+        </div>
+
         {courses.length > 0 && (
-          <select
-            style={{ padding: '0.6rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
-            value={selectedCourseId}
-            onChange={e => setSelectedCourseId(e.target.value)}
-          >
-            <option value="all">All Courses ({displayStudents.length} enrollments)</option>
-            {courses.map(c => (
-              <option key={c._id} value={c._id}>{c.title} ({c.students?.length || 0})</option>
-            ))}
-          </select>
+          <div className="enrolled-students-filter">
+            <select
+              value={selectedCourseId}
+              onChange={(e) => setSelectedCourseId(e.target.value)}
+              aria-label="Filter students by course"
+            >
+              <option value="all">
+                All Courses ({displayStudents.length} enrollments)
+              </option>
+
+              {courses.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.title} ({c.students?.length || 0})
+                </option>
+              ))}
+            </select>
+          </div>
         )}
       </div>
 

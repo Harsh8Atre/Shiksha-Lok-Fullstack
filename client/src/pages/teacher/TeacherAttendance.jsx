@@ -6,6 +6,7 @@ import EmptyState from '../../components/EmptyState';
 import ErrorMessage from '../../components/ErrorMessage';
 import sessionService from '../../services/sessionService';
 import attendanceService from '../../services/attendanceService';
+import '../../assets/styles/pages.css';
 
 const TeacherAttendance = () => {
   const [sessions, setSessions] = useState([]);
@@ -58,20 +59,27 @@ const TeacherAttendance = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>Class Attendance Reports</h1>
+      <div className="responsive-page-header attendance-reports-header">
+        <div className="responsive-page-heading">
+          <h1>Class Attendance Reports</h1>
+        </div>
+
         {sessions.length > 0 && (
-          <select
-            style={{ padding: '0.6rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
-            value={selectedSessionId}
-            onChange={e => setSelectedSessionId(e.target.value)}
-          >
-            {sessions.map(s => (
-              <option key={s._id} value={s._id}>
-                {s.classId?.title || 'Session'} ({new Date(s.createdAt).toLocaleDateString()}) - {s.status?.toUpperCase()}
-              </option>
-            ))}
-          </select>
+          <div className="attendance-session-filter">
+            <select
+              value={selectedSessionId}
+              onChange={(e) => setSelectedSessionId(e.target.value)}
+              aria-label="Select session for attendance report"
+            >
+              {sessions.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.classId?.title || "Session"} (
+                  {new Date(s.createdAt).toLocaleDateString()}) -{" "}
+                  {s.status?.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
       </div>
 

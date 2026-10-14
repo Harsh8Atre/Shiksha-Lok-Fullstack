@@ -52,7 +52,7 @@ const AdminClasses = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }} className="responsive-page-toolbar">
         <h1 style={{ margin: 0 }}>All Scheduled & Past Classes</h1>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <Button variant={filter === 'all' ? 'primary' : 'outline'} size="sm" onClick={() => setFilter('all')}>
@@ -78,9 +78,9 @@ const AdminClasses = () => {
           message="No lectures currently match the selected status filter."
         />
       ) : (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
+        <Card style={{ padding: 0, minWidth: 0, maxWidth: '100%' }}>
           <div className="table-responsive">
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <table>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--bg-primary)' }}>
                   <th style={{ padding: '1rem' }}>Class Title</th>

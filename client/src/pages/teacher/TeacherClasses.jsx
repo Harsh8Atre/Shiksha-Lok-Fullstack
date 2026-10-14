@@ -7,6 +7,7 @@ import EmptyState from '../../components/EmptyState';
 import ErrorMessage from '../../components/ErrorMessage';
 import classService from '../../services/classService';
 import sessionService from '../../services/sessionService';
+import '../../assets/styles/pages.css';
 
 const TeacherClasses = () => {
   const [classes, setClasses] = useState([]);
@@ -60,39 +61,66 @@ const TeacherClasses = () => {
   if (loading) return <Loader fullPage={false} />;
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0 }}>My Classes</h1>
-        <Link to="/teacher/classes/create"><Button variant="primary">+ Schedule Class</Button></Link>
+    <div className="my-classes-page">
+      <div className="responsive-page-header">
+        <div className="responsive-page-heading">
+          <h1>My Classes</h1>
+        </div>
+
+        <div className="responsive-page-actions">
+          <Link to="/teacher/classes/create" className="schedule-class-link">
+            <Button variant="primary">+ Schedule Class</Button>
+          </Link>
+        </div>
       </div>
 
-      {error && <ErrorMessage message={error} onRetry={fetchClasses} />}
+      {error && (
+        <ErrorMessage message={error} onRetry={fetchClasses} />
+      )}
 
       {classes.length === 0 ? (
         <EmptyState
           title="No classes scheduled"
           message="Schedule a class to conduct live lectures for your students."
-          action={{ label: "Schedule Class", onClick: () => navigate('/teacher/classes/create') }}
+          action={{
+            label: "Schedule Class",
+            onClick: () => navigate("/teacher/classes/create"),
+          }}
         />
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-          {classes.map(c => (
-            <div key={c._id} style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="teacher-classes-grid">
+          {classes.map((c) => (
+            <div className="teacher-class-item" key={c._id}>
               <ClassCard classItem={c} showJoin={false} />
-              <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
-                {c.status !== 'completed' && c.status !== 'cancelled' ? (
+
+              <div className="teacher-class-actions">
+                {c.status !== "completed" &&
+                c.status !== "cancelled" ? (
                   <Button
                     variant="success"
                     loading={startingId === c._id}
                     onClick={() => handleStartSession(c)}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, minWidth: 0 }}
                   >
-                    {c.status === 'live' ? 'Resume Live Session' : 'Go Live / Start'}
+                    {c.status === "live"
+                      ? "Resume Live Session"
+                      : "Go Live / Start"}
                   </Button>
                 ) : (
-                  <Button variant="outline" disabled style={{ flex: 1 }}>Completed</Button>
+                  <Button
+                    variant="outline"
+                    disabled
+                    style={{ flex: 1, minWidth: 0 }}
+                  >
+                    Completed
+                  </Button>
                 )}
-                <Button variant="danger" size="sm" onClick={() => handleDeleteClass(c._id)}>
+
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDeleteClass(c._id)}
+                >
                   Delete
                 </Button>
               </div>

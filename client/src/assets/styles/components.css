@@ -30,6 +30,7 @@
   box-shadow: var(--shadow);
   padding: var(--spacing-md);
   border: 1px solid var(--border);
+  max-width: 100%;
 }
 .card:hover.hoverable {
   box-shadow: var(--shadow-lg);

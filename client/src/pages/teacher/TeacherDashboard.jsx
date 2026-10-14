@@ -8,6 +8,7 @@ import { FiBook, FiVideo, FiUsers, FiActivity, FiPlus } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import courseService from '../../services/courseService';
 import classService from '../../services/classService';
+import '../../assets/styles/pages.css';
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
@@ -64,20 +65,31 @@ const TeacherDashboard = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <div>
-          <h1 style={{ margin: 0 }}>Welcome, {user?.name}!</h1>
-          <p style={{ color: 'var(--text-secondary)', margin: '0.5rem 0 0 0' }}>{user?.college || 'Faculty'}</p>
+      <div className="responsive-page-header">
+        <div className="responsive-page-heading">
+          <h1>Welcome, {user?.name}!</h1>
+          <p>{user?.college || 'Faculty'}</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Button variant="primary" onClick={() => navigate('/teacher/classes/create')}>
-            <FiPlus style={{ marginRight: '0.5rem' }} /> Schedule Class
+
+        <div className="responsive-page-actions">
+          <Button
+            variant="primary"
+            onClick={() => navigate('/teacher/classes/create')}
+          >
+            <FiPlus />
+            Schedule Class
           </Button>
-          <Button variant="secondary" onClick={() => navigate('/teacher/courses/create')}>
-            <FiPlus style={{ marginRight: '0.5rem' }} /> New Course
+
+          <Button
+            variant="secondary"
+            onClick={() => navigate('/teacher/courses/create')}
+          >
+            <FiPlus />
+            New Course
           </Button>
         </div>
       </div>
+
       
       <div className="dashboard-grid" style={{ marginBottom: '2.5rem' }}>
         <Card>

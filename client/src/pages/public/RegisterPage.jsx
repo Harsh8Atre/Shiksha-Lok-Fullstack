@@ -5,6 +5,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import { useAuth } from '../../context/AuthContext';
+import '../../assets/styles/pages.css';
 
 const RegisterPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -95,15 +96,14 @@ const RegisterPage = () => {
     <div style={{ width: '100%' }}>
       {!selectedRole ? (
         /* STEP 1: ROLE SELECTION CARDS */
-        <Card style={{ padding: '2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Join ShikshaLok
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '520px', margin: '0 auto' }}>
-              Choose how you would like to participate in the virtual education platform to get started.
-            </p>
-          </div>
+        <Card className="registration-panel role-selection-panel">
+          <div className="registration-intro">
+            <h2 className="registration-title">Join ShikshaLok</h2>
+    <p className="registration-subtitle">
+      Choose how you would like to participate in the virtual
+      education platform to get started.
+    </p>
+  </div>
 
           <div className="role-selection-grid">
             {/* Student Role Card */}
@@ -202,8 +202,8 @@ const RegisterPage = () => {
         </Card>
       ) : (
         /* STEP 2: REUSABLE ADAPTIVE REGISTRATION FORM */
-        <Card style={{ maxWidth: '520px', margin: '0 auto', padding: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <Card className="registration-panel registration-form-panel">
+          <div className="registration-form-topbar">
             <button
               type="button"
               onClick={handleBackToRoles}

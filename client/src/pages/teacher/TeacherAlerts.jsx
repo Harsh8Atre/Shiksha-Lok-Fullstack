@@ -9,6 +9,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import courseService from '../../services/courseService';
 import alertService from '../../services/alertService';
 import { useSocketContext } from '../../context/SocketContext';
+import '../../assets/styles/pages.css';
 
 const TeacherAlerts = () => {
   const [courses, setCourses] = useState([]);
@@ -79,42 +80,67 @@ const TeacherAlerts = () => {
   if (loading) return <Loader fullPage={false} />;
 
   return (
-    <div>
-      <h1 style={{ marginBottom: '2rem' }}>Announcements & Alerts</h1>
-      
+    <div className="announcements-page">
+      <div className="responsive-page-header">
+        <div className="responsive-page-heading">
+          <h1>Announcements &amp; Alerts</h1>
+        </div>
+      </div>
+
       {error && <ErrorMessage message={error} />}
+
       {success && (
-        <div style={{ padding: '1rem', background: 'var(--success)', color: 'white', borderRadius: 'var(--radius-sm)', marginBottom: '1.5rem' }}>
+        <div className="alert-success-message" role="status">
           {success}
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '2rem' }}>
+      <div className="announcements-layout">
+        {/* Send Alert Form */}
         <Card>
-          <h3 style={{ margin: '0 0 1rem 0' }}>Send New Alert</h3>
+          <h3 className="announcement-section-title">
+            Send New Alert
+          </h3>
+
           <form onSubmit={handleSendAlert}>
-            <Input label="Title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Class Rescheduled / Exam Reminder" required />
-            <div className="form-group" style={{ marginBottom: '1rem' }}>
-              <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Target Course</label>
+            <Input
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Class Rescheduled / Exam Reminder"
+              required
+            />
+
+            <div className="form-group announcement-form-group">
+              <label className="form-label" htmlFor="alert-course">
+                Target Course
+              </label>
+
               <select
+                id="alert-course"
                 className="form-input"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
                 value={courseId}
-                onChange={e => setCourseId(e.target.value)}
+                onChange={(e) => setCourseId(e.target.value)}
               >
                 <option value="">All Enrolled Students</option>
-                {courses.map(c => (
-                  <option key={c._id} value={c._id}>{c.title}</option>
+                {courses.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.title}
+                  </option>
                 ))}
               </select>
             </div>
-            <div className="form-group" style={{ marginBottom: '1rem' }}>
-              <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Priority / Type</label>
+
+            <div className="form-group announcement-form-group">
+              <label className="form-label" htmlFor="alert-type">
+                Priority / Type
+              </label>
+
               <select
+                id="alert-type"
                 className="form-input"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
                 value={type}
-                onChange={e => setType(e.target.value)}
+                onChange={(e) => setType(e.target.value)}
               >
                 <option value="info">Information (Blue)</option>
                 <option value="warning">Warning / Reminder (Yellow)</option>
@@ -122,39 +148,53 @@ const TeacherAlerts = () => {
                 <option value="announcement">Announcement (Green)</option>
               </select>
             </div>
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Message</label>
+
+            <div className="form-group announcement-form-group announcement-message-group">
+              <label className="form-label" htmlFor="alert-message">
+                Message
+              </label>
+
               <textarea
+                id="alert-message"
                 className="form-input"
-                rows="4"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
+                rows={4}
                 value={message}
-                onChange={e => setMessage(e.target.value)}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Write your announcement or notice here..."
                 required
-              ></textarea>
+              />
             </div>
-            <Button type="submit" variant="primary" loading={sending} style={{ width: '100%' }}>
+
+            <Button
+              type="submit"
+              variant="primary"
+              loading={sending}
+              style={{ width: "100%" }}
+            >
               Send Real-Time Alert
             </Button>
           </form>
         </Card>
-        
-        <div>
-          <h3 style={{ margin: '0 0 1rem 0' }}>Alerts & Notice History</h3>
+
+        {/* Alert History */}
+        <section className="announcements-history">
+          <h3 className="announcement-section-title">
+            Alerts &amp; Notice History
+          </h3>
+
           {alerts.length === 0 ? (
             <EmptyState
               title="No alerts sent yet"
               message="Use the form to send real-time alerts and announcements to your students."
             />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {alerts.map(alert => (
+            <div className="announcement-alert-list">
+              {alerts.map((alert) => (
                 <AlertCard key={alert._id} alert={alert} />
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

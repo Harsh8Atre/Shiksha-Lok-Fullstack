@@ -14,6 +14,7 @@ const AdminCourses = () => {
   const fetchCourses = async () => {
     setLoading(true);
     setError('');
+
     try {
       const res = await courseService.getCourses({ all: 'true' });
       const list = res.data || res || [];
@@ -30,22 +31,35 @@ const AdminCourses = () => {
   }, []);
 
   const handleDeleteCourse = async (id) => {
-    if (!window.confirm('Delete this course, its scheduled classes, and study materials?')) return;
+    if (
+      !window.confirm(
+        'Delete this course, its scheduled classes, and study materials?'
+      )
+    ) {
+      return;
+    }
+
     try {
       await courseService.deleteCourse(id);
-      setCourses(courses.filter(c => c._id !== id));
+      setCourses((prevCourses) =>
+        prevCourses.filter((course) => course._id !== id)
+      );
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete course');
+      window.alert(
+        err.response?.data?.message || 'Failed to delete course'
+      );
     }
   };
 
   if (loading) return <Loader fullPage={false} />;
 
   return (
-    <div>
-      <h1 style={{ marginBottom: '2rem' }}>All Platform Courses</h1>
+    <section className="admin-courses-page">
+      <h1 className="admin-courses-title">All Platform Courses</h1>
 
-      {error && <ErrorMessage message={error} onRetry={fetchCourses} />}
+      {error && (
+        <ErrorMessage message={error} onRetry={fetchCourses} />
+      )}
 
       {courses.length === 0 ? (
         <EmptyState
@@ -53,31 +67,47 @@ const AdminCourses = () => {
           message="When faculty create courses, they will be listed here for moderation."
         />
       ) : (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <div className="table-responsive">
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <Card style={{ padding: 0, minWidth: 0, maxWidth: '100%' }}>
+          <div
+            className="table-responsive admin-courses-table-wrapper"
+            role="region"
+            aria-label="All platform courses"
+            tabIndex={0}
+          >
+            <table className="admin-courses-table">
               <thead>
-                <tr style={{ borderBottom: '2px solid var(--border)', background: 'var(--bg-primary)' }}>
-                  <th style={{ padding: '1rem' }}>Course Title</th>
-                  <th style={{ padding: '1rem' }}>Subject</th>
-                  <th style={{ padding: '1rem' }}>Faculty / Teacher</th>
-                  <th style={{ padding: '1rem' }}>Enrolled Students</th>
-                  <th style={{ padding: '1rem' }}>Created</th>
-                  <th style={{ padding: '1rem' }}>Actions</th>
+                <tr>
+                  <th scope="col">Course Title</th>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Faculty / Teacher</th>
+                  <th scope="col">Enrolled Students</th>
+                  <th scope="col">Created</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
+
               <tbody>
-                {courses.map(c => (
-                  <tr key={c._id} style={{ borderBottom: '1px solid var(--border)' }}>
-                    <td style={{ padding: '1rem', fontWeight: '500' }}>{c.title}</td>
-                    <td style={{ padding: '1rem' }}>{c.subject}</td>
-                    <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{c.teacher?.name || 'N/A'}</td>
-                    <td style={{ padding: '1rem' }}>{c.students?.length || 0}</td>
-                    <td style={{ padding: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                      {new Date(c.createdAt).toLocaleDateString()}
+                {courses.map((course) => (
+                  <tr key={course._id}>
+                    <td className="admin-course-title-cell">
+                      {course.title}
                     </td>
-                    <td style={{ padding: '1rem' }}>
-                      <Button variant="danger" size="sm" onClick={() => handleDeleteCourse(c._id)}>
+                    <td>{course.subject}</td>
+                    <td className="admin-course-teacher-cell">
+                      {course.teacher?.name || 'N/A'}
+                    </td>
+                    <td>{course.students?.length || 0}</td>
+                    <td className="admin-course-date-cell">
+                      {course.createdAt
+                        ? new Date(course.createdAt).toLocaleDateString()
+                        : 'N/A'}
+                    </td>
+                    <td className="admin-course-actions-cell">
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeleteCourse(course._id)}
+                      >
                         Delete
                       </Button>
                     </td>
@@ -88,7 +118,7 @@ const AdminCourses = () => {
           </div>
         </Card>
       )}
-    </div>
+    </section>
   );
 };
 

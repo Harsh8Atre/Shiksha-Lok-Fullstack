@@ -9,6 +9,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import alertService from '../../services/alertService';
 import userService from '../../services/userService';
 import { useSocketContext } from '../../context/SocketContext';
+import '../../assets/styles/pages.css';
 
 const AdminAlerts = () => {
   const [alerts, setAlerts] = useState([]);
@@ -96,7 +97,7 @@ const AdminAlerts = () => {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 1fr) 2fr', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '1.5rem', minWidth: 0,}}>
         <Card>
           <h3 style={{ margin: '0 0 1rem 0' }}>Create Broadcast Alert</h3>
           <form onSubmit={handleBroadcast}>
@@ -106,7 +107,6 @@ const AdminAlerts = () => {
               <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Target Audience</label>
               <select
                 className="form-input"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
                 value={targetGroup}
                 onChange={e => setTargetGroup(e.target.value)}
               >
@@ -120,7 +120,6 @@ const AdminAlerts = () => {
               <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Type / Severity</label>
               <select
                 className="form-input"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
                 value={type}
                 onChange={e => setType(e.target.value)}
               >
@@ -136,7 +135,6 @@ const AdminAlerts = () => {
               <textarea
                 className="form-input"
                 rows="4"
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Message displayed to all selected users..."
@@ -150,7 +148,7 @@ const AdminAlerts = () => {
           </form>
         </Card>
 
-        <div>
+        <div style={{ minWidth: 0 }}>
           <h3 style={{ margin: '0 0 1rem 0' }}>All System Alerts History</h3>
           {alerts.length === 0 ? (
             <EmptyState
